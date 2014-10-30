@@ -1,6 +1,8 @@
-In the root directory excecute: <br>
-  1) mvn jetty:run-exploded (launch Jetty server in teh port 8080)
-  
-In other console:<br>
-  2) ./gwt-compile.sh
+For run this project, follow these guidelines:
+
+1) Update JS and CSS dependencies with Bower: In src/main/webapp/ run bower update, this will create a bower directory, if the bower command create a directory with another name, renamed it.
+2)In root directory run mvn gwt:run
+3) Enjoy!!!
+
+
   
