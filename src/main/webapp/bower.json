@@ -1,0 +1,35 @@
+{
+  "name": "gwt-playground",
+  "version": "0.0.0",
+  "homepage": "https://github.com/csrinaldi/samples-of-gwt",
+  "authors": [
+    "csrinaldi <csrinaldi@gmail.com>"
+  ],
+  "main": "gwt_sample.html",
+  "keywords": [
+    "gwt",
+    "jsinterop",
+    "wecomponent"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.3.4",
+    "core-element": "Polymer/core-elements",
+    "paper-element": "Polymer/paper-elements",
+    "bootstrap": "git://github.com/twbs/bootstrap.git",
+    "bootstrap-swith" : "git://github.com/nostalgiaz/bootstrap-switch.git",
+    "datatables": "git://github.com/DataTables/DataTables.git",
+    "datatables_plugin": "git://github.com/DataTables/Plugins.git",
+    "jquery": "~2.1.1",
+    "multiselect" : "https://github.com/lou/multi-select.git"
+  }
+}
