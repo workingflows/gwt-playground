@@ -2,7 +2,6 @@ package com.logikas.gwt.sample.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.logikas.gwt.sample.client.databinding.PathObserver;
-import com.logikas.gwt.sample.client.databinding.factory.PathObserverFactory;
 import com.logikas.gwt.sample.client.databinding.listener.OpenPathObserverListener;
 import com.logikas.gwt.sample.client.model.Person;
 //import com.workingflows.js.bootstraps.client.SwitchElement;
@@ -15,6 +14,7 @@ import com.workingflows.js.jscore.client.api.Document;
 import com.workingflows.js.jscore.client.api.Function;
 import com.workingflows.js.jscore.client.api.JsObject;
 import com.workingflows.js.jscore.client.api.core.EventListener;
+import com.workingflows.js.jscore.client.api.core.Node;
 import com.workingflows.js.jscore.client.api.core.NodeList;
 import com.workingflows.js.jscore.client.api.html.HTMLBodyElement;
 import com.workingflows.js.jscore.client.api.html.HTMLElement;
@@ -44,14 +44,15 @@ public class gwt_sample implements EntryPoint {
         final HTMLElement p = doc.createElement("p");
         final HTMLElement input = doc.createElement("input");
         final HTMLElement button = doc.createElement("button");
+
         button.setInnerText("Clear changes");
         button.addEventListener("click", JS.createEventListener(new EventListener() {
             @Override
             public void onEvent(JsObject event) {
                 NodeList list = doc.querySelectorAll("p[data-change]");
-                console.log(list);
                 for (int i = 0; i < list.length(); i++) {
-                    console.log(list.pop());
+                    Node parent = list.item(i).parentElement();
+                    parent.removeChild(list.item(i));
                 }
             }
         }));
