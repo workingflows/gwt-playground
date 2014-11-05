@@ -83,29 +83,6 @@ public class gwt_sample implements EntryPoint {
         div.appendChild(input);
         body.appendChild(div);
         body.appendChild(button);
-        /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
-         $("body").append(checked);
-
-         final BootstrapSwitchElement b = BootstrapFactory.BootstrapSwitch("#c");
-         b.bootstrapSwitch(BootstrapSwitchElement.ONTEXT, "SI");
-         b.bootstrapSwitch(BootstrapSwitchElement.OFFTEXT, "NO");
-         b.on(BootstrapSwitchElement.initEvent, JS.Function(new Function<Object, Void>() {
-         @Override
-         public Object f(Array changed) {
-         $("body").append($("<p>" + changed + "</p>"));
-         return null;
-         }
-         }));*/
-
-        Browser.getWindow().getConsole().log("%cWelcome to JSInterop!%c", "font-size:1.5em;color:#4558c9;", "color:#d61a7f;font-size:1em;");
-
-        Browser.getWindow().getConsole().log("Definido Observe .... ");
-
-        div.appendChild(p);
-        div.appendChild(input);
-        body.appendChild(div);
-        body.appendChild(button);
-
 
         /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
          $("body").append(checked);
