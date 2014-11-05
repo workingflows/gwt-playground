@@ -1,3 +1,4 @@
 bower/*
 source/*
 /src/main/webapp/bower/
+/target/

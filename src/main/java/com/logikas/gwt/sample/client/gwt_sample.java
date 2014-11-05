@@ -12,6 +12,7 @@ import static com.workingflows.js.jquery.client.factory.Factories.$;
 import com.workingflows.js.jscore.client.api.Array;
 import com.workingflows.js.jscore.client.api.Console;
 import com.workingflows.js.jscore.client.api.Document;
+import com.workingflows.js.jscore.client.api.Window;
 import com.workingflows.js.jscore.client.api.Function;
 import com.workingflows.js.jscore.client.api.JsObject;
 import com.workingflows.js.jscore.client.api.core.EventListener;
@@ -23,9 +24,6 @@ import com.workingflows.js.jscore.client.api.promise.PromiseFn;
 import com.workingflows.js.jscore.client.api.promise.PromiseThenFn;
 import com.workingflows.js.jscore.client.api.promise.Rejected;
 import com.workingflows.js.jscore.client.api.promise.Resolve;
-import com.workingflows.js.jscore.client.factory.Browser;
-import static com.workingflows.js.jscore.client.factory.Browser.getDocument;
-import com.workingflows.js.jscore.client.factory.JS;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -35,24 +33,21 @@ public class gwt_sample implements EntryPoint {
     @Override
     public void onModuleLoad() {
 
-        final Console console = Browser.getWindow().getConsole();
+        final Console console = Window.Static.get().getConsole();
         final Person person = new Person();
 
-        final Document doc = getDocument();
+        final Document doc = Document.Static.get();
         final HTMLBodyElement body = doc.getBody();
         final HTMLElement div = doc.createElement("div");
         final HTMLElement p = doc.createElement("p");
         final HTMLElement input = doc.createElement("input");
         final HTMLElement button = doc.createElement("button");
         button.setInnerText("Clear changes");
-        button.addEventListener("click", JS.createEventListener(new EventListener() {
+        button.addEventListener("click", EventListener.Static.newInstance(new EventListener() {
             @Override
             public void onEvent(JsObject event) {
                 NodeList list = doc.querySelectorAll("p[data-change]");
-                console.log(list);
-                for (int i = 0; i < list.length(); i++) {
-                    console.log(list.pop());
-                }
+                //TODO
             }
         }));
 
@@ -68,35 +63,37 @@ public class gwt_sample implements EntryPoint {
                 body.appendChild(p);
             }
         }), person);
+        
+        Window.Static.get().getConsole().log(JsObject.Static.get());
 
-         JS.Object.observe(person, JS.Function(new Function<Array, Object>() {
-         @Override
-         public Object f(Array changed) {
-         return null;
-         }
-         }));
-
-         Browser.getWindow().getConsole().log("%cWelcome to JSInterop!%c", "font-size:1.5em;color:#4558c9;", "color:#d61a7f;font-size:1em;");
-
-         Browser.getWindow().getConsole().log("Definido Observe .... ");
-
-         div.appendChild(p);
-         div.appendChild(input);
-         body.appendChild(div);
-         body.appendChild(button);
-        /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
-        $("body").append(checked);
-
-        final BootstrapSwitchElement b = BootstrapFactory.BootstrapSwitch("#c");
-        b.bootstrapSwitch(BootstrapSwitchElement.ONTEXT, "SI");
-        b.bootstrapSwitch(BootstrapSwitchElement.OFFTEXT, "NO");
-        b.on(BootstrapSwitchElement.initEvent, JS.Function(new Function<Object, Void>() {
+        /*JsObject.Static.get().observe(person, Function.Static.newInstance(new Function<Array, Object>() {
             @Override
             public Object f(Array changed) {
-                $("body").append($("<p>" + changed + "</p>"));
                 return null;
             }
-        }));*/
+        }));*/  
+
+        Window.Static.get().getConsole().log("%cWelcome to JSInterop!%c", "font-size:1.5em;color:#4558c9;", "color:#d61a7f;font-size:1em;");
+
+        Window.Static.get().getConsole().log("Definido Observe .... ");
+
+        div.appendChild(p);
+        div.appendChild(input);
+        body.appendChild(div);
+        body.appendChild(button);
+        /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
+         $("body").append(checked);
+
+         final BootstrapSwitchElement b = BootstrapFactory.BootstrapSwitch("#c");
+         b.bootstrapSwitch(BootstrapSwitchElement.ONTEXT, "SI");
+         b.bootstrapSwitch(BootstrapSwitchElement.OFFTEXT, "NO");
+         b.on(BootstrapSwitchElement.initEvent, JS.Function(new Function<Object, Void>() {
+         @Override
+         public Object f(Array changed) {
+         $("body").append($("<p>" + changed + "</p>"));
+         return null;
+         }
+         }));*/
 
         /*JQueryElement checked = $("<input type='checkbox' checked></input>");
          checked.data("on-text", "SI");
@@ -105,12 +102,11 @@ public class gwt_sample implements EntryPoint {
         //SwitchElement enabled = BootstrapFactory.SwitchElement("#enabled");
         //enabled.setOnText("SI");
         //enabled.setOffText("NO");
-         
         person.setName("Cristian");
         person.setEmail("csrinaldi@gmail.com");
         person.setName("Cristian Sebastian");
 
-        final Promise p1 = Browser.newPromise(JS.Function(new PromiseFn() {
+        final Promise p1 = Promise.Static.create(PromiseFn.Static.newInstance(new PromiseFn() {
             @Override
             public void f(Resolve resolve, Rejected rejected) {
                 $("body").append($("<p>\"Resolve Promise P1\"</p>"));
@@ -118,7 +114,7 @@ public class gwt_sample implements EntryPoint {
             }
         }));
 
-        final Promise p3 = Browser.newPromise(JS.Function(new PromiseFn() {
+        final Promise p3 = Promise.Static.create(PromiseFn.Static.newInstance(new PromiseFn() {
             @Override
             public void f(Resolve resolve, Rejected rejected) {
                 $("body").append($("<p>\"Resolve Promise P3\"</p>"));
@@ -128,12 +124,12 @@ public class gwt_sample implements EntryPoint {
 
         JQueryElement promiseButton = $("<button>Ejecutar Promise</button>");
         $("body").append(promiseButton);
-        promiseButton.on("click", JS.Function(new Function<Object, Object>() {
+        promiseButton.on("click", Function.Static.newInstance(new Function<Object, Object>() {
             @Override
             public Object f(Object changed) {
                 $("body").append($("<p>Launch Promise all with Promise 1 and Promise 3</p>"));
-                JS.Promise.all(true, p1, p3).then(
-                        JS.Function(
+                Promise.Static.get().all(true, p1, p3).then(
+                        PromiseThenFn.Static.newInstance(
                                 new PromiseThenFn() {
                                     @Override
                                     public Promise f(Object changed) {
@@ -142,7 +138,7 @@ public class gwt_sample implements EntryPoint {
                                     }
                                 }
                         ),
-                        JS.Function(
+                        PromiseThenFn.Static.newInstance(
                                 new PromiseThenFn() {
                                     @Override
                                     public Promise f(Object changed) {
@@ -158,12 +154,12 @@ public class gwt_sample implements EntryPoint {
         }));
 
         p1.then(
-                JS.Function(
+                PromiseThenFn.Static.newInstance(
                         new PromiseThenFn() {
                             @Override
                             public Promise f(final Object changed) {
                                 $("body").append($("<p>Resolve P1</p>"));
-                                return Browser.newPromise(JS.Function(new PromiseFn() {
+                                return Promise.Static.create(PromiseFn.Static.newInstance(new PromiseFn() {
                                     @Override
                                     public void f(Resolve resolve, Rejected rejected) {
                                         $("body").append($("<p>" + changed + " > Other Promise" + "</p>"));
@@ -172,12 +168,12 @@ public class gwt_sample implements EntryPoint {
                                 }));
                             }
                         }),
-                JS.Function(
+                PromiseThenFn.Static.newInstance(
                         new PromiseThenFn() {
                             @Override
                             public Promise f(final Object changed) {
                                 $("body").append($("<p>Error with P1</p>"));
-                                return Browser.newPromise(JS.Function(new PromiseFn() {
+                                return Promise.Static.create(PromiseFn.Static.newInstance(new PromiseFn() {
                                     @Override
                                     public void f(Resolve resolve, Rejected rejected) {
                                         $("body").append($("<p>" + changed + " > Other With Error Promise" + "</p>"));
@@ -187,13 +183,14 @@ public class gwt_sample implements EntryPoint {
                             }
                         })
         ).then(
-                JS.Function(
+                PromiseThenFn.Static.newInstance(
                         new PromiseThenFn() {
                             @Override
                             public Promise f(final Object changed) {
                                 return null;
                             }
-                        }), JS.Function(
+                        }), 
+                PromiseThenFn.Static.newInstance(
                         new PromiseThenFn() {
                             @Override
                             public Promise f(Object changed) {
