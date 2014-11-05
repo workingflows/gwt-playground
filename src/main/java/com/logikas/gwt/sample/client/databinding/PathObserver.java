@@ -44,7 +44,6 @@ public interface PathObserver<T extends JsObject, E extends Object> extends Obse
          listener.onOpen(newValue, oldValue);
          }
          }-*/;
-
     }
 
 }

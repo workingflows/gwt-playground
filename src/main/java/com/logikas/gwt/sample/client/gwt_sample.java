@@ -113,6 +113,8 @@ public class gwt_sample implements EntryPoint {
                 resolve.resolve("Resolve Promise P1");
             }
         }));
+        
+        Window.Static.get().getConsole().log("HOLA");
 
         final Promise p3 = Promise.Static.create(PromiseFn.Static.newInstance(new PromiseFn() {
             @Override
