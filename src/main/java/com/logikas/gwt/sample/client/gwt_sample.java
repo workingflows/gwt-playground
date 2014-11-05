@@ -2,7 +2,6 @@ package com.logikas.gwt.sample.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.logikas.gwt.sample.client.databinding.PathObserver;
-import com.logikas.gwt.sample.client.databinding.factory.PathObserverFactory;
 import com.logikas.gwt.sample.client.databinding.listener.OpenPathObserverListener;
 import com.logikas.gwt.sample.client.model.Person;
 //import com.workingflows.js.bootstraps.client.SwitchElement;
@@ -16,6 +15,7 @@ import com.workingflows.js.jscore.client.api.Window;
 import com.workingflows.js.jscore.client.api.Function;
 import com.workingflows.js.jscore.client.api.JsObject;
 import com.workingflows.js.jscore.client.api.core.EventListener;
+import com.workingflows.js.jscore.client.api.core.Node;
 import com.workingflows.js.jscore.client.api.core.NodeList;
 import com.workingflows.js.jscore.client.api.html.HTMLBodyElement;
 import com.workingflows.js.jscore.client.api.html.HTMLElement;
@@ -42,25 +42,27 @@ public class gwt_sample implements EntryPoint {
         final HTMLElement p = doc.createElement("p");
         final HTMLElement input = doc.createElement("input");
         final HTMLElement button = doc.createElement("button");
+
         button.setInnerText("Clear changes");
         button.addEventListener("click", EventListener.Static.newInstance(new EventListener() {
             @Override
             public void onEvent(JsObject event) {
                 NodeList list = doc.querySelectorAll("p[data-change]");
-                //TODO
+                for (int i = 0; i < list.length(); i++) {
+                    Node parent = list.item(i).parentElement();
+                    parent.removeChild(list.item(i));
+                }
             }
         }));
 
-        final PathObserver<Person, String> observer = PathObserverFactory.createPathObserver(person, "name");
+        final PathObserver<Person, String> observer = PathObserver.Static.create(person, "name");
         input.bind("value", observer);
-        final PathObserver<Person, String> observer1 = PathObserverFactory.createPathObserver(person, "name");
-        final String original = observer1.open(PathObserverFactory.createOpenPathObserverListener(new OpenPathObserverListener<Person>() {
+        final PathObserver<Person, String> observer1 = PathObserver.Static.create(person, "name");
+
+        final String original = observer1.open(PathObserver.Static.listener(new OpenPathObserverListener<Person>() {
             @Override
             public void onOpen(String newValue, String oldValue) {
-                HTMLElement p = doc.createElement("P");
-                p.setInnerText("The new Value is: " + newValue);
-                p.setAttribute("data-change", newValue);
-                body.appendChild(p);
+                $("body").append($("<p>").text("The new Value is: " + newValue).attr("data-change", newValue));
             }
         }), person);
         
@@ -95,11 +97,32 @@ public class gwt_sample implements EntryPoint {
          }
          }));*/
 
-        /*JQueryElement checked = $("<input type='checkbox' checked></input>");
+        Browser.getWindow().getConsole().log("%cWelcome to JSInterop!%c", "font-size:1.5em;color:#4558c9;", "color:#d61a7f;font-size:1em;");
+
+        Browser.getWindow().getConsole().log("Definido Observe .... ");
+
+        div.appendChild(p);
+        div.appendChild(input);
+        body.appendChild(div);
+        body.appendChild(button);
+
+
+        /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
+         $("body").append(checked);
+
+         final BootstrapSwitchElement b = BootstrapFactory.BootstrapSwitch("#c");
+         b.bootstrapSwitch(BootstrapSwitchElement.ONTEXT, "SI");
+         b.bootstrapSwitch(BootstrapSwitchElement.OFFTEXT, "NO");
+         b.on(BootstrapSwitchElement.initEvent, JS.Function(new Function<Object, Void>() {
+         @Override
+         public Object f(Array changed) {
+         $("body").append($("<p>" + changed + "</p>"));
+         return null;
+         }
+         }));*/ /*JQueryElement checked = $("<input type='checkbox' checked></input>");
          checked.data("on-text", "SI");
          checked.data("off-text", "NO");
-         $("body").append(checked);*/
-        //SwitchElement enabled = BootstrapFactory.SwitchElement("#enabled");
+         $("body").append(checked);*/ //SwitchElement enabled = BootstrapFactory.SwitchElement("#enabled");
         //enabled.setOnText("SI");
         //enabled.setOffText("NO");
         person.setName("Cristian");

@@ -6,6 +6,7 @@
 package com.logikas.gwt.sample.client.databinding;
 
 import com.google.gwt.core.client.js.JsType;
+import com.logikas.gwt.sample.client.databinding.listener.OpenPathObserverListener;
 import com.workingflows.js.jscore.client.api.JsObject;
 
 /**
@@ -23,8 +24,27 @@ import com.workingflows.js.jscore.client.api.JsObject;
 public interface PathObserver<T extends JsObject, E extends Object> extends Observable<T, E> {
 
     /**
-     * PathObserver also exposes a setValue method which attempts to update the underlying value. Setting the value does not affect notification state (in other words, a caller sets the value but does not discardChanges, the changeFn will be notified of the change).
-     * @param value 
+     * PathObserver also exposes a setValue method which attempts to update the
+     * underlying value. Setting the value does not affect notification state
+     * (in other words, a caller sets the value but does not discardChanges, the
+     * changeFn will be notified of the change).
+     *
+     * @param value
      */
     void setValue(E value);
+
+    public static class Static {
+
+        public static native <T extends JsObject, E extends Object> PathObserver<T, E> create(T obj, E path)/*-{
+         return new $wnd.PathObserver(obj, path);
+         }-*/;
+
+        public static native <T extends JsObject> OpenPathObserverListener<T> listener(OpenPathObserverListener<T> listener)/*-{
+         return function(newValue, oldValue){
+         listener.onOpen(newValue, oldValue);
+         }
+         }-*/;
+
+    }
+
 }
