@@ -8,7 +8,6 @@ import com.logikas.gwt.sample.client.model.Person;
 //import com.workingflows.js.bootstraps.client.factory.BootstrapFactory;
 import com.workingflows.js.jquery.client.api.JQueryElement;
 import static com.workingflows.js.jquery.client.factory.Factories.$;
-import com.workingflows.js.jscore.client.api.Array;
 import com.workingflows.js.jscore.client.api.Console;
 import com.workingflows.js.jscore.client.api.Document;
 import com.workingflows.js.jscore.client.api.Window;
@@ -17,6 +16,7 @@ import com.workingflows.js.jscore.client.api.JsObject;
 import com.workingflows.js.jscore.client.api.core.EventListener;
 import com.workingflows.js.jscore.client.api.core.Node;
 import com.workingflows.js.jscore.client.api.core.NodeList;
+import com.workingflows.js.jscore.client.api.db.IDBOpenDBRequest;
 import com.workingflows.js.jscore.client.api.html.HTMLBodyElement;
 import com.workingflows.js.jscore.client.api.html.HTMLElement;
 import com.workingflows.js.jscore.client.api.promise.Promise;
@@ -34,6 +34,17 @@ public class gwt_sample implements EntryPoint {
     public void onModuleLoad() {
 
         final Console console = Window.Static.get().getConsole();
+
+        IDBOpenDBRequest req = Window.Static.get().indexedDB().open("db", 1);
+        req.onsuccess(Function.Static.newInstance(new Function<Object, Void>() {
+
+            @Override
+            public Void f(Object changed) {
+                console.log(changed);
+                return null;
+            }
+        }));
+
         final Person person = new Person();
 
         final Document doc = Document.Static.get();
@@ -65,16 +76,15 @@ public class gwt_sample implements EntryPoint {
                 $("body").append($("<p>").text("The new Value is: " + newValue).attr("data-change", newValue));
             }
         }), person);
-        
+
         Window.Static.get().getConsole().log(JsObject.Static.get());
 
         /*JsObject.Static.get().observe(person, Function.Static.newInstance(new Function<Array, Object>() {
-            @Override
-            public Object f(Array changed) {
-                return null;
-            }
-        }));*/  
-
+         @Override
+         public Object f(Array changed) {
+         return null;
+         }
+         }));*/
         Window.Static.get().getConsole().log("%cWelcome to JSInterop!%c", "font-size:1.5em;color:#4558c9;", "color:#d61a7f;font-size:1em;");
 
         Window.Static.get().getConsole().log("Definido Observe .... ");
@@ -113,7 +123,7 @@ public class gwt_sample implements EntryPoint {
                 resolve.resolve("Resolve Promise P1");
             }
         }));
-        
+
         Window.Static.get().getConsole().log("HOLA");
 
         final Promise p3 = Promise.Static.create(PromiseFn.Static.newInstance(new PromiseFn() {
@@ -191,7 +201,7 @@ public class gwt_sample implements EntryPoint {
                             public Promise f(final Object changed) {
                                 return null;
                             }
-                        }), 
+                        }),
                 PromiseThenFn.Static.newInstance(
                         new PromiseThenFn() {
                             @Override
