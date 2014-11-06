@@ -19,6 +19,8 @@ import com.workingflows.js.jscore.client.api.JsObject;
 @JsNamespace("$wnd.Logikas.Model")
 public class Person implements Model, JsObject {
 
+    private String uuid;
+    
     private String name;
 
     private String email;
@@ -34,7 +36,7 @@ public class Person implements Model, JsObject {
     }
 
     @JsExport
-    public Person(String name, String email) {
+    public Person(String name, String email, String uuid) {
         this.name = name;
         this.email = email;
     }
@@ -56,6 +58,14 @@ public class Person implements Model, JsObject {
         this.email = email;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+    
     @Override
     public String toString() {
         return "\"Username\" : \""+name+"\",\"Email\":\""+email+"\"";

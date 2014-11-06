@@ -1,6 +1,7 @@
 package com.logikas.gwt.sample.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.js.JsType;
 import com.logikas.gwt.sample.client.databinding.PathObserver;
 import com.logikas.gwt.sample.client.databinding.listener.OpenPathObserverListener;
 import com.logikas.gwt.sample.client.model.Person;
@@ -16,7 +17,12 @@ import com.workingflows.js.jscore.client.api.JsObject;
 import com.workingflows.js.jscore.client.api.core.EventListener;
 import com.workingflows.js.jscore.client.api.core.Node;
 import com.workingflows.js.jscore.client.api.core.NodeList;
+import com.workingflows.js.jscore.client.api.db.IDBDatabase;
+import com.workingflows.js.jscore.client.api.db.IDBObjectStore;
 import com.workingflows.js.jscore.client.api.db.IDBOpenDBRequest;
+import com.workingflows.js.jscore.client.api.db.IDBRequest;
+import com.workingflows.js.jscore.client.api.db.IDBTransaction;
+import com.workingflows.js.jscore.client.api.db.IDBVersionChangeEvent;
 import com.workingflows.js.jscore.client.api.html.HTMLBodyElement;
 import com.workingflows.js.jscore.client.api.html.HTMLElement;
 import com.workingflows.js.jscore.client.api.promise.Promise;
@@ -24,27 +30,90 @@ import com.workingflows.js.jscore.client.api.promise.PromiseFn;
 import com.workingflows.js.jscore.client.api.promise.PromiseThenFn;
 import com.workingflows.js.jscore.client.api.promise.Rejected;
 import com.workingflows.js.jscore.client.api.promise.Resolve;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class gwt_sample implements EntryPoint {
 
+    @JsType
+    private class Structure implements JsObject {
+
+        private String keyPath;
+
+        public Structure(String keyPath) {
+            this.keyPath = keyPath;
+        }
+
+        public String getKeyPath() {
+            return keyPath;
+        }
+    }
+
+    @JsType
+    private class IndexOptions implements JsObject {
+
+        private boolean unique;
+
+        public IndexOptions(boolean unique) {
+            this.unique = unique;
+        }
+
+        public boolean isUnique() {
+            return unique;
+        }
+    }
+
+    private IDBDatabase db;
+
     @Override
     public void onModuleLoad() {
 
         final Console console = Window.Static.get().getConsole();
 
-        IDBOpenDBRequest req = Window.Static.get().indexedDB().open("db", 1);
-        req.onsuccess(Function.Static.newInstance(new Function<Object, Void>() {
+        //Abriendo la Base de Datos
+        final IDBOpenDBRequest req = Window.Static.get().indexedDB().open("db", 6);
+        req.onsuccess(
+                Function.Static.newInstance(new Function<Object, Void>() {
+                    @Override
+                    public Void f(Object changed) {
+                        console.log("onseccess");
+                        db = req.result();
+                        return null;
+                    }
+                }));
 
-            @Override
-            public Void f(Object changed) {
-                console.log(changed);
-                return null;
-            }
-        }));
+        //Regenerando estrucutura de datos
+        req.onupgradeneeded(Function.Static.newInstance(
+                new Function<IDBVersionChangeEvent<IDBOpenDBRequest>, Void>() {
+                    @Override
+                    public Void f(IDBVersionChangeEvent<IDBOpenDBRequest> event) {
+                        console.log("onupgradeneeded");
+                        db = event.target().result();
 
+                        if (Arrays.asList(db.objectStoreNames()).contains("person")) {
+                            db.deleteObjectStore("person");
+                        }
+
+                        IDBObjectStore objectStore = db.createObjectStore("person", new Structure("uuid"));
+                        objectStore.createIndex("name", "name", new IndexOptions(false));
+                        objectStore.createIndex("email", "email", new IndexOptions(true));
+
+                        return null;
+                    }
+                })
+        );
+
+        /*db.onversionchange(Function.Static.newInstance(new Function<Object, Void>() {
+         @Override
+         public Void f(Object changed) {
+         console.log("The version is changed ", changed);
+         return null;
+         }
+
+         }));*/
         final Person person = new Person();
 
         final Document doc = Document.Static.get();
@@ -77,8 +146,6 @@ public class gwt_sample implements EntryPoint {
             }
         }), person);
 
-        Window.Static.get().getConsole().log(JsObject.Static.get());
-
         /*JsObject.Static.get().observe(person, Function.Static.newInstance(new Function<Array, Object>() {
          @Override
          public Object f(Array changed) {
@@ -93,6 +160,38 @@ public class gwt_sample implements EntryPoint {
         div.appendChild(input);
         body.appendChild(div);
         body.appendChild(button);
+
+        JQueryElement addData = $("<button>");
+        addData.text("Add Data").on("click", Function.Static.newInstance(new Function<Object, Void>() {
+            @Override
+            public Void f(Object changed) {
+                
+                console.log("Agregando datos ....");
+                
+                Person p = new Person("7a153e4d-a866-4d50-a6ad-72b1dfff685a", "Cristian Rinaldi", "csrinaldi@gmail.com");
+                ArrayList<String> objs = new ArrayList<>();
+                objs.add("person");
+                String[] arr = new String[objs.size()];
+                IDBTransaction tx = db.transaction(objs.toArray(arr), IDBTransaction.READWRITE);
+
+                IDBObjectStore store = tx.objectStore("person");
+                IDBRequest<Object> req = store.add(p);
+                
+                req.onsuccess(Function.Static.newInstance(new Function<Void, Void>() {
+                    @Override
+                    public Void f(Void changed) {
+                        JQueryElement p = $("p").text("Data Add Success!!!");
+                        $("body").append(p);
+                        return null;
+                    }
+                }));
+
+                
+                return null;
+            }
+        }));
+
+        $("body").append(addData);
 
         /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
          $("body").append(checked);
