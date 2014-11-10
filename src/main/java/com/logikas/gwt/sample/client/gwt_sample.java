@@ -1,14 +1,17 @@
 package com.logikas.gwt.sample.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.json.client.JSONBoolean;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.logikas.gwt.sample.client.databinding.PathObserver;
 import com.logikas.gwt.sample.client.databinding.listener.OpenPathObserverListener;
 import com.logikas.gwt.sample.client.model.Person;
-//import com.workingflows.js.bootstraps.client.SwitchElement;
-//import com.workingflows.js.bootstraps.client.factory.BootstrapFactory;
 import com.workingflows.js.jquery.client.api.JQueryElement;
-import static com.workingflows.js.jquery.client.factory.Factories.$;
+import static com.workingflows.js.jquery.client.api.JQueryElement.Static.$;
 import com.workingflows.js.jscore.client.api.Console;
 import com.workingflows.js.jscore.client.api.Document;
 import com.workingflows.js.jscore.client.api.Window;
@@ -39,7 +42,7 @@ import java.util.Arrays;
 public class gwt_sample implements EntryPoint {
 
     @JsType
-    private class Structure implements JsObject {
+    private class Structure implements JsObject{
 
         private String keyPath;
 
@@ -50,6 +53,11 @@ public class gwt_sample implements EntryPoint {
         public String getKeyPath() {
             return keyPath;
         }
+
+        public void setKeyPath(String keyPath) {
+            this.keyPath = keyPath;
+        }
+        
     }
 
     @JsType
@@ -64,9 +72,22 @@ public class gwt_sample implements EntryPoint {
         public boolean isUnique() {
             return unique;
         }
+
+        public void setUnique(boolean unique) {
+            this.unique = unique;
+        }
+        
+        @Override
+        public String toString() {
+            return "{ \"unique\" : \""+unique+"\"}";
+        }
+        
+        
     }
 
     private IDBDatabase db;
+    
+    
 
     @Override
     public void onModuleLoad() {
@@ -74,13 +95,37 @@ public class gwt_sample implements EntryPoint {
         final Console console = Window.Static.get().getConsole();
 
         //Abriendo la Base de Datos
-        final IDBOpenDBRequest req = Window.Static.get().indexedDB().open("db", 6);
+        final IDBOpenDBRequest req = Window.Static.get().indexedDB().open("db", 8);
         req.onsuccess(
                 Function.Static.newInstance(new Function<Object, Void>() {
                     @Override
                     public Void f(Object changed) {
-                        console.log("onseccess");
                         db = req.result();
+                        
+                        IDBTransaction trx = db.transaction(new String[]{"person"}, IDBTransaction.READWRITE);
+                        IDBObjectStore person = trx.objectStore("person");
+                        JSONObject struture = new JSONObject();
+                        struture.put("uuid", new JSONString("654654646-654564646"));
+                        struture.put("name", new JSONString("Cristian"));
+                        struture.put("email", new JSONString("Rinaldi"));
+                        person.add(struture);
+                        
+                        trx.oncomplete(Function.Static.newInstance(new Function<Object, Void>() {
+                            @Override
+                            public Void f(Object changed) {
+                                console.log("All Person adds");
+                                return null;
+                            }
+                        }));
+                        
+                        trx.onerror(Function.Static.newInstance(new Function<Object, Void>() {
+                            @Override
+                            public Void f(Object changed) {
+                                console.log("Errors ",changed);
+                                return null;
+                            }
+                        }));
+                        
                         return null;
                     }
                 }));
@@ -97,14 +142,21 @@ public class gwt_sample implements EntryPoint {
                             db.deleteObjectStore("person");
                         }
 
-                        IDBObjectStore objectStore = db.createObjectStore("person", new Structure("uuid"));
-                        objectStore.createIndex("name", "name", new IndexOptions(false));
-                        objectStore.createIndex("email", "email", new IndexOptions(true));
+                        JSONObject conf = new JSONObject();
+                        conf.put("keyPath", new JSONString("uuid"));
+                        
+                        JSONObject index = new JSONObject();
+                        index.put("unique", JSONBoolean.getInstance(false));
+                        
+                        IDBObjectStore objectStore = db.createObjectStore("person", conf);
+                        
+                        objectStore.createIndex("name", "name", index);
+                        index.put("unique", JSONBoolean.getInstance(true));
+                        objectStore.createIndex("email", "email", index);
 
                         return null;
                     }
-                })
-        );
+                }));
 
         /*db.onversionchange(Function.Static.newInstance(new Function<Object, Void>() {
          @Override
@@ -175,7 +227,7 @@ public class gwt_sample implements EntryPoint {
                 IDBTransaction tx = db.transaction(objs.toArray(arr), IDBTransaction.READWRITE);
 
                 IDBObjectStore store = tx.objectStore("person");
-                IDBRequest<Object> req = store.add(p);
+                //IDBRequest<Object> req = store.add(p);
                 
                 req.onsuccess(Function.Static.newInstance(new Function<Void, Void>() {
                     @Override
