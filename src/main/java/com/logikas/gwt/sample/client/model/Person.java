@@ -39,6 +39,7 @@ public class Person implements Model, JsObject {
     public Person(String name, String email, String uuid) {
         this.name = name;
         this.email = email;
+        this.uuid = email;
     }
 
     

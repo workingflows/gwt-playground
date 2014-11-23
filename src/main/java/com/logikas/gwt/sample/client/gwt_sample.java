@@ -1,12 +1,11 @@
 package com.logikas.gwt.sample.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.logikas.gwt.sample.client.databinding.PathObserver;
 import com.logikas.gwt.sample.client.databinding.listener.OpenPathObserverListener;
 import com.logikas.gwt.sample.client.model.Person;
@@ -23,7 +22,6 @@ import com.workingflows.js.jscore.client.api.core.NodeList;
 import com.workingflows.js.jscore.client.api.db.IDBDatabase;
 import com.workingflows.js.jscore.client.api.db.IDBObjectStore;
 import com.workingflows.js.jscore.client.api.db.IDBOpenDBRequest;
-import com.workingflows.js.jscore.client.api.db.IDBRequest;
 import com.workingflows.js.jscore.client.api.db.IDBTransaction;
 import com.workingflows.js.jscore.client.api.db.IDBVersionChangeEvent;
 import com.workingflows.js.jscore.client.api.html.HTMLBodyElement;
@@ -95,7 +93,7 @@ public class gwt_sample implements EntryPoint {
         final Console console = Window.Static.get().getConsole();
 
         //Abriendo la Base de Datos
-        final IDBOpenDBRequest req = Window.Static.get().indexedDB().open("db", 8);
+        final IDBOpenDBRequest req = Window.Static.get().indexedDB().open("kratos", 15);
         req.onsuccess(
                 Function.Static.newInstance(new Function<Object, Void>() {
                     @Override
@@ -105,15 +103,18 @@ public class gwt_sample implements EntryPoint {
                         IDBTransaction trx = db.transaction(new String[]{"person"}, IDBTransaction.READWRITE);
                         IDBObjectStore person = trx.objectStore("person");
                         JSONObject struture = new JSONObject();
-                        struture.put("uuid", new JSONString("654654646-654564646"));
                         struture.put("name", new JSONString("Cristian"));
                         struture.put("email", new JSONString("Rinaldi"));
-                        person.add(struture);
+                        
+                        console.log(struture.toString());
+                        
+                        person.add(struture, "5");
                         
                         trx.oncomplete(Function.Static.newInstance(new Function<Object, Void>() {
                             @Override
                             public Void f(Object changed) {
                                 console.log("All Person adds");
+                                console.log(changed.getClass().getName());
                                 return null;
                             }
                         }));
@@ -143,16 +144,30 @@ public class gwt_sample implements EntryPoint {
                         }
 
                         JSONObject conf = new JSONObject();
-                        conf.put("keyPath", new JSONString("uuid"));
+                        //conf.put("keyPath", new JSONString("uuid"));
+                        //conf.put("autoIncrement", JSONBoolean.getInstance(true));
+                        
+                        console.log(conf);
                         
                         JSONObject index = new JSONObject();
                         index.put("unique", JSONBoolean.getInstance(false));
                         
-                        IDBObjectStore objectStore = db.createObjectStore("person", conf);
+                            IDBObjectStore objectStore = db.createObjectStore("person", conf);
+
+                        console.log(objectStore);
                         
+                        GWT.log(objectStore.keyPath());
+                        
+                        console.log("Terminamos de procesar");
+                        
+                        index.put("unique", JSONBoolean.getInstance(false));
                         objectStore.createIndex("name", "name", index);
                         index.put("unique", JSONBoolean.getInstance(true));
                         objectStore.createIndex("email", "email", index);
+                        
+                        console.log(objectStore);
+                        
+                        console.log("Terminamos!!!");
 
                         return null;
                     }

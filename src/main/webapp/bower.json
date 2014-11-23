@@ -24,6 +24,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.4",
     "core-element": "Polymer/core-elements",
+    "core-icons": "Polymer/core-icons",
     "paper-element": "Polymer/paper-elements",
     "bootstrap": "git://github.com/twbs/bootstrap.git",
     "bootstrap-swith" : "git://github.com/nostalgiaz/bootstrap-switch.git",
