@@ -13,7 +13,7 @@ import com.workingflows.js.jscore.client.api.JsObject;
  *
  * @author Cristian Rinaldi
  */
-@JsType(prototype = "JSON", isNative = true)
+@JsType(prototype = "JSON")
 public interface JSON {
     
     String stringify(JsObject object);

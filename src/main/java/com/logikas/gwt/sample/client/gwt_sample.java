@@ -3,6 +3,8 @@ package com.logikas.gwt.sample.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.dev.js.JsAbstractSymbolResolver;
+import com.google.gwt.dev.shell.Jsni;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -40,7 +42,7 @@ import java.util.Arrays;
 public class gwt_sample implements EntryPoint {
 
     @JsType
-    private class Structure implements JsObject{
+    private class Structure implements JsObject {
 
         private String keyPath;
 
@@ -55,7 +57,7 @@ public class gwt_sample implements EntryPoint {
         public void setKeyPath(String keyPath) {
             this.keyPath = keyPath;
         }
-        
+
     }
 
     @JsType
@@ -74,18 +76,15 @@ public class gwt_sample implements EntryPoint {
         public void setUnique(boolean unique) {
             this.unique = unique;
         }
-        
+
         @Override
         public String toString() {
-            return "{ \"unique\" : \""+unique+"\"}";
+            return "{ \"unique\" : \"" + unique + "\"}";
         }
-        
-        
+
     }
 
     private IDBDatabase db;
-    
-    
 
     @Override
     public void onModuleLoad() {
@@ -93,23 +92,34 @@ public class gwt_sample implements EntryPoint {
         final Console console = Window.Static.get().getConsole();
 
         //Abriendo la Base de Datos
-        final IDBOpenDBRequest req = Window.Static.get().indexedDB().open("kratos", 15);
-        req.onsuccess(
+        final IDBOpenDBRequest req = Window.Static.get().getIndexedDB().open("kratos", 15);
+        
+        Function onSuccess = new Function() {
+            @Override
+            public Object call(Object changed) {
+                return null;
+            }
+        };
+        
+        req.setOnsuccess(onSuccess);
+        
+        
+        /*req.onsuccess(
                 Function.Static.newInstance(new Function<Object, Void>() {
                     @Override
                     public Void f(Object changed) {
                         db = req.result();
-                        
+
                         IDBTransaction trx = db.transaction(new String[]{"person"}, IDBTransaction.READWRITE);
                         IDBObjectStore person = trx.objectStore("person");
                         JSONObject struture = new JSONObject();
                         struture.put("name", new JSONString("Cristian"));
                         struture.put("email", new JSONString("Rinaldi"));
-                        
+
                         console.log(struture.toString());
-                        
+
                         person.add(struture, "5");
-                        
+
                         trx.oncomplete(Function.Static.newInstance(new Function<Object, Void>() {
                             @Override
                             public Void f(Object changed) {
@@ -118,20 +128,19 @@ public class gwt_sample implements EntryPoint {
                                 return null;
                             }
                         }));
-                        
+
                         trx.onerror(Function.Static.newInstance(new Function<Object, Void>() {
                             @Override
                             public Void f(Object changed) {
-                                console.log("Errors ",changed);
+                                console.log("Errors ", changed);
                                 return null;
                             }
                         }));
-                        
+
                         return null;
                     }
                 }));
 
-        //Regenerando estrucutura de datos
         req.onupgradeneeded(Function.Static.newInstance(
                 new Function<IDBVersionChangeEvent<IDBOpenDBRequest>, Void>() {
                     @Override
@@ -144,44 +153,31 @@ public class gwt_sample implements EntryPoint {
                         }
 
                         JSONObject conf = new JSONObject();
-                        //conf.put("keyPath", new JSONString("uuid"));
-                        //conf.put("autoIncrement", JSONBoolean.getInstance(true));
-                        
-                        console.log(conf);
-                        
                         JSONObject index = new JSONObject();
                         index.put("unique", JSONBoolean.getInstance(false));
-                        
-                            IDBObjectStore objectStore = db.createObjectStore("person", conf);
+
+                        IDBObjectStore objectStore = db.createObjectStore("person", conf);
 
                         console.log(objectStore);
-                        
+
                         GWT.log(objectStore.keyPath());
-                        
+
                         console.log("Terminamos de procesar");
-                        
+
                         index.put("unique", JSONBoolean.getInstance(false));
                         objectStore.createIndex("name", "name", index);
                         index.put("unique", JSONBoolean.getInstance(true));
                         objectStore.createIndex("email", "email", index);
-                        
+
                         console.log(objectStore);
-                        
+
                         console.log("Terminamos!!!");
 
                         return null;
                     }
-                }));
+                }));*/
 
-        /*db.onversionchange(Function.Static.newInstance(new Function<Object, Void>() {
-         @Override
-         public Void f(Object changed) {
-         console.log("The version is changed ", changed);
-         return null;
-         }
-
-         }));*/
-        final Person person = new Person();
+        final Person person = new Person("Cristian", "csrinaldi@gmail.com", "");
 
         final Document doc = Document.Static.get();
         final HTMLBodyElement body = doc.getBody();
@@ -202,7 +198,7 @@ public class gwt_sample implements EntryPoint {
             }
         }));
 
-        final PathObserver<Person, String> observer = PathObserver.Static.create(person, "name");
+        /*final PathObserver<Person, String> observer = PathObserver.Static.create(person, "name");
         input.bind("value", observer);
         final PathObserver<Person, String> observer1 = PathObserver.Static.create(person, "name");
 
@@ -211,14 +207,8 @@ public class gwt_sample implements EntryPoint {
             public void onOpen(String newValue, String oldValue) {
                 $("body").append($("<p>").text("The new Value is: " + newValue).attr("data-change", newValue));
             }
-        }), person);
+        }), person);*/
 
-        /*JsObject.Static.get().observe(person, Function.Static.newInstance(new Function<Array, Object>() {
-         @Override
-         public Object f(Array changed) {
-         return null;
-         }
-         }));*/
         Window.Static.get().getConsole().log("%cWelcome to JSInterop!%c", "font-size:1.5em;color:#4558c9;", "color:#d61a7f;font-size:1em;");
 
         Window.Static.get().getConsole().log("Definido Observe .... ");
@@ -228,22 +218,22 @@ public class gwt_sample implements EntryPoint {
         body.appendChild(div);
         body.appendChild(button);
 
-        JQueryElement addData = $("<button>");
+        /*JQueryElement addData = $("<button>");
         addData.text("Add Data").on("click", Function.Static.newInstance(new Function<Object, Void>() {
             @Override
             public Void f(Object changed) {
-                
+
                 console.log("Agregando datos ....");
-                
+
                 Person p = new Person("7a153e4d-a866-4d50-a6ad-72b1dfff685a", "Cristian Rinaldi", "csrinaldi@gmail.com");
-                ArrayList<String> objs = new ArrayList<>();
+                ArrayList<String> objs = new ArrayList();
                 objs.add("person");
                 String[] arr = new String[objs.size()];
                 IDBTransaction tx = db.transaction(objs.toArray(arr), IDBTransaction.READWRITE);
 
                 IDBObjectStore store = tx.objectStore("person");
                 //IDBRequest<Object> req = store.add(p);
-                
+
                 req.onsuccess(Function.Static.newInstance(new Function<Void, Void>() {
                     @Override
                     public Void f(Void changed) {
@@ -253,12 +243,22 @@ public class gwt_sample implements EntryPoint {
                     }
                 }));
 
-                
                 return null;
             }
         }));
 
-        $("body").append(addData);
+        $("body").append(addData);*/
+
+        JQueryElement onClickButton = $("<button>Ejecutar onClick</button>");
+        onClickButton.click(new com.workingflows.js.jquery.client.api.Function() {
+            @Override
+            public Object call() {
+                GWT.log("HOLAAAA");
+                return null;
+            }
+        });
+
+        $("body").append(onClickButton);
 
         /*JQueryElement checked = $("<input type='checkbox' id='c' checked></input>");
          $("body").append(checked);
@@ -302,7 +302,7 @@ public class gwt_sample implements EntryPoint {
 
         JQueryElement promiseButton = $("<button>Ejecutar Promise</button>");
         $("body").append(promiseButton);
-        promiseButton.on("click", Function.Static.newInstance(new Function<Object, Object>() {
+        /*promiseButton.on("click", Function.Static.newInstance(new Function<Object, Object>() {
             @Override
             public Object f(Object changed) {
                 $("body").append($("<p>Launch Promise all with Promise 1 and Promise 3</p>"));
@@ -329,7 +329,7 @@ public class gwt_sample implements EntryPoint {
 
                 return null;
             }
-        }));
+        }));*/
 
         p1.then(
                 PromiseThenFn.Static.newInstance(

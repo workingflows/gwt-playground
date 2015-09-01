@@ -26,12 +26,6 @@ public class ModuleImpl implements Module {
     private final String version;
 
     @JsExport
-    public ModuleImpl() {
-        this.name = "default";
-        this.version = "0.0.0";
-    }
-
-    @JsExport
     public ModuleImpl(String name, String version) {
         this.name = name;
         this.version = version;

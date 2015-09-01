@@ -23,7 +23,7 @@ public class Employee extends Person {
     
     @JsExport
     public Employee(String name, String cuit){
-        super(name);
+        super(name, "", "");
         this.cuit = cuit;
     }
 

@@ -26,22 +26,11 @@ public class Person implements Model, JsObject {
     private String email;
 
     @JsExport
-    public Person() {
-    }
-
-    @JsExport
-    public Person(String name) {
-        this.name = name;
-        this.email = "";
-    }
-
-    @JsExport
     public Person(String name, String email, String uuid) {
         this.name = name;
         this.email = email;
         this.uuid = email;
     }
-
     
     public String getName() {
         return name;
