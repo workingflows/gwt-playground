@@ -1,4 +1,5 @@
 bower/*
 source/*
-/src/main/webapp/bower/
-/target/
+src/main/webapp/bower/*
+target/*
+gwt-unitCache/*
