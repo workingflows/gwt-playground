@@ -6,3 +6,5 @@ gwt-unitCache/*
 gen/*
 source/*
 .idea/*
+gwt-sample.iml
+src/main/main.iml
