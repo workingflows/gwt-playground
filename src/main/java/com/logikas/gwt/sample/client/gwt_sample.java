@@ -36,8 +36,10 @@ public class gwt_sample implements EntryPoint {
         });
         
         PromiseThen then = (Object obj) -> {
-            console.log("Resolve");
+            console.log("Resolve--------------");
             console.log(obj);
+            console.log("REsolve--------------");
+            testNativeCode();
             return null;
         };
         
@@ -59,13 +61,14 @@ public class gwt_sample implements EntryPoint {
         model.setName("Cristian Sebastian");
         
         
-        
-        
     }
 
-    public static native void newJSModule()/*-{
-     var module = new $wnd.Logikas.ModuleImpl("m", "1.0.0");
-     console.log(module);
-     console.log(module.getName());
+    public static native void testNativeCode()/*-{
+     var person = new $wnd.logikas.Person("Cristian", "Rinaldi");
+     console.log(person.name);
+     console.log(person.surname);
+     console.log(person.getName());
+     console.log(person.getSurname());
+            
      }-*/;
 }
