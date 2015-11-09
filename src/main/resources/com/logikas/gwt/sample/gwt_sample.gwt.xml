@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='gwt_sample'>
+<module rename-to='gwt_playground'>
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User'/>
     <inherits name='com.google.gwt.junit.JUnit' />
@@ -9,25 +9,12 @@
     
     <inherits name="com.google.gwt.logging.Logging" />
     <inherits name="com.workingflows.js.jscore.JSCore" />
-    <inherits name='com.workingflows.js.jquery.JQuery' />
-    <!--inherits name='com.workingflows.js.jquery.datatables.DataTables' />
-    <inherits name="com.workingflows.js.bootstraps.Bootstraps"/>
-    <inherits name="com.workingflows.js.jquery.plugin.select.Select"/-->
     
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.logikas.gwt.sample.client.gwt_sample' />
 
     <!-- Specify the paths for translatable code                    -->
     <source path='client' />
-    
-    <set-property name="gwt.logging.enabled" value="TRUE" />
-    <set-property name="gwt.logging.logLevel" value="ALL" />
-    <set-property name="gwt.logging.consoleHandler" value="ENABLED" />
-    <set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
-    <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
-    <set-property name="gwt.logging.systemHandler" value="ENABLED" />
-    <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
-      
     <!--set-property name="user.agent" value="safari" /-->
     <set-property name="user.agent" value="safari"/>
     <extend-property name="locale" values="en"/>

@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- POM file generated with GWT webAppCreator -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.logikas.gwt.sample</groupId>
     <artifactId>gwt-sample</artifactId>
@@ -13,9 +12,6 @@
     <name>GWT Playground</name>
 
     <properties>
-        <!-- Convenience property to set the GWT version -->
-        <!--gwtVersion>2.6.1</gwtVersion-->
-        <!--gwtVersion>2.7.0-SNAPSHOT</gwtVersion-->
         <gwt.version>2.8.0-SNAPSHOT</gwt.version>
         <gwt.plugin.version>2.8.0-SNAPSHOT</gwt.plugin.version>
         
@@ -27,70 +23,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>1.8</version>
-                        <executions>
-                            <execution>
-                                <id>add-source</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>add-source</goal>
-                                </goals>
-                                <configuration>
-                                    <sources>
-                                        <source>../gwt-jscore/src/main/java</source>
-                                        <source>../gwt-jquery/src/main/java</source>
-                                    </sources>
-                                </configuration>
-                            </execution>
-                            <!--execution>
-                                <id>add-resource</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>add-resource</goal>
-                                </goals>
-                                <configuration>
-                                    <resources>
-                                        <resource>
-                                            <directory>../api/src/main/resources</directory>
-                                            <targetPath>resources</targetPath>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution-->
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-    
     <dependencyManagement>
         <dependencies>
-            <!--dependency>
-                <groupId>com.google.gwt</groupId>
-                <artifactId>gwt</artifactId>
-                <type>pom</type>
-                <scope>import</scope>
-                <version>${gwt.version}</version>
-            </dependency-->
-            
             <dependency>
                 <groupId>com.workingflows.js</groupId>
                 <artifactId>jscore</artifactId>
-                <version>1.0</version>
-            </dependency>
-        
-            <dependency>
-                <groupId>com.workingflows.js</groupId>
-                <artifactId>jquery</artifactId>
                 <version>1.0</version>
             </dependency>
         </dependencies>
@@ -101,12 +38,6 @@
         
         <dependency>
             <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-codeserver</artifactId>
-            <version>${gwt.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwt.version}</version>
         </dependency>
@@ -114,30 +45,6 @@
         <dependency>
             <groupId>com.workingflows.js</groupId>
             <artifactId>jscore</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.workingflows.js</groupId>
-            <artifactId>jquery</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20140107</version>
-        </dependency>
-        
-
-        <dependency>
-            <groupId>com.workingflows.js</groupId>
-            <artifactId>select-plugin</artifactId>
-            <version>1.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.workingflows.js.bootstraps</groupId>
-            <artifactId>bootstraps</artifactId>
-            <version>1.0</version>
         </dependency>
 
     </dependencies>
@@ -159,7 +66,7 @@
                     <style>PRETTY</style>
                     <gen>${basedir}/gen</gen>
                     <incremental>true</incremental>
-                    <jsInteropMode>JS</jsInteropMode>
+                    <jsInteropMode>JS_RC</jsInteropMode>
                     <runTarget>gwt_sample.html</runTarget>
                 </configuration>
                 <executions>
@@ -193,8 +100,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -236,7 +143,7 @@
                 <updatePolicy>always</updatePolicy>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
